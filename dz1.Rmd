@@ -1,0 +1,50 @@
+---
+title: "Domaca zadaca 1"
+author: "Ivana Tus"
+date: "2024-03-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls())
+library(signal)
+```
+
+## Realizacija Butterworth filtera trećeg reda
+
+Potrebno je realizirati Butterworth filtar trećeg reda s kritičnom frekvencijom od 0.1.
+
+Prvo se definira kritična frekvencija od 0.1 i generiraju koeficijenti filtera pomoću butter funkcije iz paketa signal.
+
+```{r coef}
+fc <- 0.1
+butter <- butter(3, W = fc, type = "low")
+```
+
+Računa se frekvencijski odziv filtera uz freqz funkciju.
+
+```{r freq}
+H_butter <- freqz(butter$b, butter$a, 100)
+```
+
+Potom se definira funkcija koja crta graf Butterworth filtera.
+
+```{r plt_func}
+hPlot <- function(H, filter_name) {
+  plot(H$f, abs(H$h),
+       type = "l",
+       col = "red",
+       ylim = c(0, 1),
+       xlab = "Normalizirana frekvencija",
+       ylab = "Amplituda",
+       main = paste("Filter", filter_name, "(z)", sep = " ")
+  )
+}
+```
+
+```{r plot, echo=FALSE}
+hPlot(H_butter, "Butterworth")
+```
+
+Kao što je vidljivo na grafu, nema oštrih prijelaza ili skokova unutar prolaznog područja, što znači glatku propusnost. 0.5 se uzima kao polovica frekvencije uzorkovanja te je na grafu vidljivo da je do te točke frekvencija normalizirana. Taj dio grafa predstavlja filter koji je niskopropustan, odnosno ne propušta signale s visokim frekvencijama.
